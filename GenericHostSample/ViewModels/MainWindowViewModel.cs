@@ -1,8 +1,12 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using GenericHostSample.Contracts.Services;
 using GenericHostSample.Models;
+using GenericHostSample.Properties;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,22 +17,22 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace GenericHostSample.ViewModels;
-class MainWindowViewModel : ObservableObject
+public class MainWindowViewModel : ObservableObject
 {
-	public MainWindowViewModel()
-	{
-		Model = new Model();
-	}
-	public MainWindowViewModel( Model model )
+	public MainWindowViewModel( Model model, ILogger<MainWindowViewModel> logger, ISelectFileService fileService )
 	{
 		Model = model;
+		m_logger = logger;
+		m_selectFileService = fileService;
+		m_selectFileFilter = string.Empty;
 	}
 	public Model Model { get; set; }
 
+	public string Title => string.IsNullOrEmpty( Model?.FilePath ) ? Resources.AppTitle : Resources.AppTitle + " - " + Path.GetFileName( Model.FilePath );
 	public BitmapSource Image
 	{
 		// uint == 32 == 8x4 == ARGB()
-		get => Model.Image ?? BitmapSource.Create( 1, 1, 96, 96, PixelFormats.Bgra32, null, new uint[]{ 0x00000000 }, 1 );
+		get => Model.Image ?? BitmapSource.Create( 1, 1, 96, 96, PixelFormats.Bgra32, null, new uint[] { 0x00000000 }, 1 );
 		set
 		{
 			// ビットマップソースから構築する
@@ -43,12 +47,43 @@ class MainWindowViewModel : ObservableObject
 
 	private void OnFileOpen()
 	{
-		System.Windows.MessageBox.Show( "工事中...ファイル-開く" );
+		// フィルターは、VM側で調整してやる
+		var filePath = m_selectFileService.OpenFile( GetImageFileFilter(), string.Empty, Model.FilePath );
+		if( !string.IsNullOrEmpty( filePath ) )
+		{
+			Model.OpenFile( filePath );
+			OnPropertyChanged( nameof( Image ) );
+			OnPropertyChanged( nameof( Title ) );
+			OnPropertyChanged( nameof( Title ) );
+		}
 	}
 	private void OnFileExit()
 	{
 		App.Current.MainWindow.Close();
 	}
+
+	private string GetImageFileFilter()
+	{
+		if( string.IsNullOrWhiteSpace( m_selectFileFilter ) )
+		{
+			m_selectFileFilter = string.Join( "|",
+				Model.ImageFileFilters.Select( filter =>
+					string.Join( "|", filter.Key, string.Join( ';', filter.Value.Split( ',' ).Select( ext => "*" + ext ) ) )
+				)
+			);
+			m_selectFileFilter += "|すべてのファイル|*.*";
+		}
+		return m_selectFileFilter;
+	}
+	// デザイナー用のデフォルトコンストラクタ(プロパティの宣言しか参照されることはない
+#pragma warning disable CS8618 // null 非許容のフィールドには、コンストラクターの終了時に null 以外の値が入っていなければなりません。Null 許容として宣言することをご検討ください。
+	public MainWindowViewModel()
+#pragma warning restore CS8618 // null 非許容のフィールドには、コンストラクターの終了時に null 以外の値が入っていなければなりません。Null 許容として宣言することをご検討ください。
+	{
+	}
 	private ICommand? m_fileOpenCommand;
 	private ICommand? m_fileExitCommand;
+	private ILogger<MainWindowViewModel> m_logger;
+	private ISelectFileService m_selectFileService;
+	private string m_selectFileFilter;
 }

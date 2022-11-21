@@ -1,4 +1,6 @@
-﻿using System;
+﻿using GenericHostSample.Contracts.Views;
+using GenericHostSample.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,10 +20,11 @@ namespace GenericHostSample.Views;
 /// <summary>
 /// Interaction logic for MainWindow.xaml
 /// </summary>
-public partial class MainWindow
+public partial class MainWindow : IMainWindow
 {
-	public MainWindow()
+	public MainWindow( MainWindowViewModel vm )
 	{
 		InitializeComponent();
+		DataContext = vm;
 	}
 }

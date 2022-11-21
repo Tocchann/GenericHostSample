@@ -6,10 +6,10 @@
 				xmlns:local="clr-namespace:GenericHostSample"
 				xmlns:vm="clr-namespace:GenericHostSample.ViewModels"
 				mc:Ignorable="d"
-				Title="MainWindow" Height="450" Width="800">
-	<Window.DataContext>
+				Title="{Binding Title}" Height="450" Width="800">
+	<d:Window.DataContext>
 		<vm:MainWindowViewModel />
-	</Window.DataContext>
+	</d:Window.DataContext>
 	<Window.InputBindings>
 		<KeyBinding Key="O" Modifiers="Ctrl" Command="{Binding FileOpenCommand}" />
 		<KeyBinding Key="F4" Modifiers="Alt" Command="{Binding FileExitCommand}" />
@@ -26,5 +26,6 @@
 				<MenuItem Header="終了(_X)" InputGestureText="Alt+F4" Command="{Binding FileExitCommand}" />
 			</MenuItem>
 		</Menu>
+		<Image Grid.Row="1" Source="{Binding Image}" />
 	</Grid>
 </Window>
