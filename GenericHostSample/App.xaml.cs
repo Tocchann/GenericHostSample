@@ -29,13 +29,6 @@ namespace GenericHostSample
 					.ConfigureServices( ConfigureServices )
 					.Build();
 			await m_host.StartAsync();
-
-			// VMの終了コマンドをハンドリングするためのコードをここに書く(WPFのシステムに依存する部分を持ってくる
-			var lifeTime = GetService<IHostApplicationLifetime>();
-			lifeTime?.ApplicationStopping.Register( () => MainWindow?.Close() );
-			lifeTime?.ApplicationStarted.Register( () => IsRunning = true );
-			lifeTime?.ApplicationStopped.Register( () => IsRunning = false );
-
 		}
 		private void ConfigureServices( HostBuilderContext context, IServiceCollection services )
 		{

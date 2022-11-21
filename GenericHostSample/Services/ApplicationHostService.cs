@@ -15,6 +15,11 @@ public class ApplicationHostService : IHostedService
 	}
 	public async Task StartAsync( CancellationToken cancellationToken )
 	{
+		// VMの終了コマンドをハンドリングするためのコードをここに書く
+		var lifeTime = m_serviceProvider.GetService<IHostApplicationLifetime>();
+		lifeTime?.ApplicationStopping.Register( () => App.Current.MainWindow?.Close() );
+		lifeTime?.ApplicationStarted.Register( () => App.Current.IsRunning = true );
+		lifeTime?.ApplicationStopped.Register( () => App.Current.IsRunning = false );
 		cancellationToken.ThrowIfCancellationRequested();
 		await Task.CompletedTask;
 
