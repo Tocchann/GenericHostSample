@@ -1,12 +1,6 @@
 ﻿using GenericHostSample.Contracts.Services;
 using GenericHostSample.Properties;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Resources;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace GenericHostSample.Services;
