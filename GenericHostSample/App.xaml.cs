@@ -13,5 +13,14 @@ namespace GenericHostSample
 	/// </summary>
 	public partial class App : Application
 	{
+		private void OnStartup( object sender, StartupEventArgs e )
+		{
+		}
+		private void OnExit( object sender, ExitEventArgs e )
+		{
+		}
+		private void OnDispatcherUnhandledException( object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e )
+		{
+		}
 	}
 }
