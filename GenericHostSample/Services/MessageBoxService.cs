@@ -15,7 +15,7 @@ class MessageBoxService : IMessageBoxService
 {
 	public MessageBoxResult Show( string message, MessageBoxButton button = MessageBoxButton.OK, MessageBoxImage icon = MessageBoxImage.Exclamation, MessageBoxResult defaultResult = MessageBoxResult.None, MessageBoxOptions options = MessageBoxOptions.None )
 	{
-		m_logger?.LogDebug( $"MessageBoxService.Show( message:{message}, button:{button}, icon:{icon},defaultResult:{defaultResult},options:{options}" );
+		m_logger?.LogInformation( $"MessageBoxService.Show( message:{message}, button:{button}, icon:{icon},defaultResult:{defaultResult},options:{options}" );
 
 		return App.Current?.MainWindow is not null
 			? System.Windows.MessageBox.Show( App.Current.MainWindow, message, Resources.AppTitle, button, icon, defaultResult, options )

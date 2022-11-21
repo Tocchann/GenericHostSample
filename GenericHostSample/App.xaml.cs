@@ -55,14 +55,22 @@ namespace GenericHostSample
 		{
 			if( m_host != null )
 			{
-				await m_host.StopAsync();
+				var host = m_host;
+				m_host = null;
+				await host.StopAsync();
 			}
 			m_host = null;
 		}
 		private void OnDispatcherUnhandledException( object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e )
 		{
+			e.Handled = m_host != null;
+			var msgBoxService = GetService<IMessageBoxService>();
+#if DEBUG
+			msgBoxService?.Show( e.Exception.ToString(), MessageBoxButton.OK, MessageBoxImage.Error );
+#else
+			msgBoxService?.Show( e.Exception.Message, MessageBoxButton.OK, MessageBoxImage.Error );
+#endif
 		}
-
 		private IHost? m_host;
 	}
 }
