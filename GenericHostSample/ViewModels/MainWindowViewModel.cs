@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using GenericHostSample.Contracts.Services;
 using GenericHostSample.Models;
 using GenericHostSample.Properties;
+using GenericHostSample.Services;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -19,11 +20,12 @@ using System.Windows.Media.Imaging;
 namespace GenericHostSample.ViewModels;
 public class MainWindowViewModel : ObservableObject
 {
-	public MainWindowViewModel( Model model, ILogger<MainWindowViewModel> logger, ISelectFileService fileService )
+	public MainWindowViewModel( Model model, ILogger<MainWindowViewModel> logger, ISelectFileService fileService, IAppCloseService appCloseService )
 	{
 		Model = model;
 		m_logger = logger;
 		m_selectFileService = fileService;
+		m_appCloseService = appCloseService;
 		m_selectFileFilter = string.Empty;
 	}
 	public Model Model { get; set; }
@@ -47,6 +49,7 @@ public class MainWindowViewModel : ObservableObject
 
 	private void OnFileOpen()
 	{
+		m_logger?.LogInformation( $"Called {System.Reflection.MethodBase.GetCurrentMethod()?.Name}()" );
 		// フィルターは、VM側で調整してやる
 		var filePath = m_selectFileService.OpenFile( GetImageFileFilter(), string.Empty, Model.FilePath );
 		if( !string.IsNullOrEmpty( filePath ) )
@@ -59,7 +62,8 @@ public class MainWindowViewModel : ObservableObject
 	}
 	private void OnFileExit()
 	{
-		App.Current.MainWindow.Close();
+		m_logger?.LogInformation( $"Called {System.Reflection.MethodBase.GetCurrentMethod()?.Name}()" );
+		m_appCloseService?.Close();
 	}
 
 	private string GetImageFileFilter()
@@ -85,5 +89,6 @@ public class MainWindowViewModel : ObservableObject
 	private ICommand? m_fileExitCommand;
 	private ILogger<MainWindowViewModel> m_logger;
 	private ISelectFileService m_selectFileService;
+	private IAppCloseService m_appCloseService;
 	private string m_selectFileFilter;
 }
