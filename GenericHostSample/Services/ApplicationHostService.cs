@@ -19,9 +19,12 @@ public class ApplicationHostService : IHostedService
 	public async Task StartAsync( CancellationToken cancellationToken )
 	{
 		cancellationToken.ThrowIfCancellationRequested();
+		await Task.CompletedTask;
+
 		//	メインウィンドウを構築
 		var window = m_serviceProvider.GetService<IMainWindow>();
 		window?.Show();
+
 		cancellationToken.ThrowIfCancellationRequested();
 		await Task.CompletedTask;
 	}

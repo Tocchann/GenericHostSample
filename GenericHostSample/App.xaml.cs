@@ -35,6 +35,13 @@ namespace GenericHostSample
 					.ConfigureServices( ConfigureServices )
 					.Build();
 			await m_host.StartAsync();
+
+			// VMの終了コマンドをハンドリングするためのコードをここに書く(WPFのシステムに依存する部分を持ってくる
+			var lifeTime = GetService<IHostApplicationLifetime>();
+			lifeTime?.ApplicationStopping.Register( () => MainWindow?.Close() );
+			lifeTime?.ApplicationStarted.Register( () => IsRunning = true );
+			lifeTime?.ApplicationStopped.Register( () => IsRunning = false );
+
 		}
 		private void ConfigureServices( HostBuilderContext context, IServiceCollection services )
 		{
@@ -55,15 +62,13 @@ namespace GenericHostSample
 		{
 			if( m_host != null )
 			{
-				var host = m_host;
-				m_host = null;
-				await host.StopAsync();
+				await m_host.StopAsync();
 			}
 			m_host = null;
 		}
 		private void OnDispatcherUnhandledException( object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e )
 		{
-			e.Handled = m_host != null;
+			e.Handled = IsRunning;
 			var msgBoxService = GetService<IMessageBoxService>();
 #if DEBUG
 			msgBoxService?.Show( e.Exception.ToString(), MessageBoxButton.OK, MessageBoxImage.Error );
