@@ -11,22 +11,14 @@ public class ApplicationHostService : IHostedService
 {
 	public ApplicationHostService( IServiceProvider serviceProvider )
 	{
-		m_serviceProvider = serviceProvider;
+		var lifeTime = serviceProvider.GetService<IHostApplicationLifetime>();
+		// スタート処理が一通り終わったら、メインウィンドウを表示する
+		lifeTime?.ApplicationStarted.Register( () => serviceProvider.GetService<IMainWindow>()?.Show() );
+		// 終了要求が来たら、メインウィンドウをクローズする
+		lifeTime?.ApplicationStopping.Register( () => App.Current.MainWindow?.Close() );
 	}
 	public async Task StartAsync( CancellationToken cancellationToken )
 	{
-		// VMの終了コマンドをハンドリングするためのコードをここに書く
-		var lifeTime = m_serviceProvider.GetService<IHostApplicationLifetime>();
-		lifeTime?.ApplicationStopping.Register( () => App.Current.MainWindow?.Close() );
-		lifeTime?.ApplicationStarted.Register( () => App.Current.IsRunning = true );
-		lifeTime?.ApplicationStopped.Register( () => App.Current.IsRunning = false );
-		cancellationToken.ThrowIfCancellationRequested();
-		await Task.CompletedTask;
-
-		//	メインウィンドウを構築
-		var window = m_serviceProvider.GetService<IMainWindow>();
-		window?.Show();
-
 		cancellationToken.ThrowIfCancellationRequested();
 		await Task.CompletedTask;
 	}
@@ -36,5 +28,4 @@ public class ApplicationHostService : IHostedService
 		cancellationToken.ThrowIfCancellationRequested();
 		await Task.CompletedTask;
 	}
-	private IServiceProvider m_serviceProvider;
 }
