@@ -20,7 +20,6 @@ namespace GenericHostSample
 	{
 		public T? GetService<T>() where T : class => m_host?.Services.GetService( typeof( T ) ) as T;
 		public static new App Current => (App)Application.Current;
-		public bool IsRunning { get; set; }
 		private async void OnStartup( object sender, StartupEventArgs e )
 		{
 			var appLocation = Path.GetDirectoryName( Assembly.GetEntryAssembly()?.Location ) ?? string.Empty;
@@ -47,7 +46,7 @@ namespace GenericHostSample
 		}
 		private async void OnExit( object sender, ExitEventArgs e )
 		{
-			if( m_host != null )
+			if( m_host is not null )
 			{
 				await m_host.StopAsync();
 			}
@@ -55,7 +54,7 @@ namespace GenericHostSample
 		}
 		private void OnDispatcherUnhandledException( object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e )
 		{
-			e.Handled = IsRunning;
+			e.Handled = MainWindow is not null;
 			var msgBoxService = GetService<IMessageBoxService>();
 #if DEBUG
 			msgBoxService?.Show( e.Exception.ToString(), MessageBoxButton.OK, MessageBoxImage.Error );
