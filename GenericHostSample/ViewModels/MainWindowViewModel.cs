@@ -25,10 +25,9 @@ public class MainWindowViewModel : ObservableObject
 	public Model Model { get; set; }
 
 	public string Title => string.IsNullOrEmpty( Model?.FilePath ) ? Resources.AppTitle : Resources.AppTitle + " - " + Path.GetFileName( Model.FilePath );
-	public BitmapSource Image
+	public BitmapSource? Image
 	{
-		// uint == 32 == 8x4 == ARGB()
-		get => Model.Image ?? BitmapSource.Create( 1, 1, 96, 96, PixelFormats.Bgra32, null, new uint[] { 0x00000000 }, 1 );
+		get => Model.Image;
 		set
 		{
 			// ビットマップソースから構築する

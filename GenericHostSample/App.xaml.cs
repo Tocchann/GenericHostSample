@@ -7,6 +7,8 @@ using GenericHostSample.Views;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using System;
 using System.IO;
 using System.Reflection;
 using System.Windows;
@@ -27,10 +29,38 @@ namespace GenericHostSample
 					.ConfigureAppConfiguration( c => c.SetBasePath( appLocation ) )
 					.ConfigureServices( ConfigureServices )
 					.Build();
+			// 単純にメインウィンドウを作るだけの段取り(IMainWindowの代わりに、MainWindowのままでもよい)
+			//var lifeTime = GetService<IHostApplicationLifetime>();
+			//lifeTime?.ApplicationStarted.Register( () => GetService<IMainWindow>()?.Show() );
+			//lifeTime?.ApplicationStopping.Register( () => App.Current.MainWindow?.Close() );
+			SetupLifeTimeEvents( GetService<ILogger<App>>(), GetService<IHostApplicationLifetime>() );
+
 			await m_host.StartAsync();
 		}
+
+		private void SetupLifeTimeEvents( ILogger<App>? logger, IHostApplicationLifetime? lifeTime )
+		{
+			// どのタイミングでどのイベントが動作しているかを確認できるように、ロギングしている(デバッグ実行で出力画面で確認可能)
+			lifeTime?.ApplicationStarted.Register( () =>
+			{
+				logger?.LogInformation( "Called lifeTime?.ApplicationStarted" );
+				GetService<IMainWindow>()?.Show();
+			} );
+			lifeTime?.ApplicationStopping.Register( () =>
+			{
+				logger?.LogInformation( "Called lifeTime?.ApplicationStopping" );
+				App.Current.MainWindow?.Close();
+			} );
+			lifeTime?.ApplicationStopped.Register( () =>
+			{
+				logger?.LogInformation( "Called lifeTime?.ApplicationStopped" );
+			} );
+			logger?.LogInformation( "PreCall m_host.StartAsync()" );
+		}
+
 		private void ConfigureServices( HostBuilderContext context, IServiceCollection services )
 		{
+			// IHost の動作状況に合わせてコールバックされるサービス(IHostApplicationLifetimeのイベントで処理しているのでこっちはいらない)
 			services.AddHostedService<ApplicationHostService>();
 
 			// 独自に作ったサービス
@@ -46,6 +76,8 @@ namespace GenericHostSample
 		}
 		private async void OnExit( object sender, ExitEventArgs e )
 		{
+			var logger = GetService<ILogger<App>>();
+			logger?.LogInformation( "PreCall m_host.StopAsync()" );
 			if( m_host is not null )
 			{
 				await m_host.StopAsync();
