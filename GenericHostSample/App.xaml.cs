@@ -29,33 +29,35 @@ namespace GenericHostSample
 					.ConfigureAppConfiguration( c => c.SetBasePath( appLocation ) )
 					.ConfigureServices( ConfigureServices )
 					.Build();
-			// 単純にメインウィンドウを作るだけの段取り(IMainWindowの代わりに、MainWindowのままでもよい)
-			//var lifeTime = GetService<IHostApplicationLifetime>();
-			//lifeTime?.ApplicationStarted.Register( () => GetService<IMainWindow>()?.Show() );
-			//lifeTime?.ApplicationStopping.Register( () => App.Current.MainWindow?.Close() );
-			SetupLifeTimeEvents( GetService<ILogger<App>>(), GetService<IHostApplicationLifetime>() );
 
+			var logger = GetService<ILogger<App>>();
+			SetupLifeTimeEvents( logger, GetService<IHostApplicationLifetime>() );
+
+			logger?.LogInformation( "PreCall m_host.StartAsync()" );
 			await m_host.StartAsync();
 		}
 
 		private void SetupLifeTimeEvents( ILogger<App>? logger, IHostApplicationLifetime? lifeTime )
 		{
+			// ロギングなどが不要ならメソッドアウトせずに以下の１行で済む
+			//GetService<IHostApplicationLifetime>()?.ApplicationStopping.Register( () => App.Current.MainWindow?.Close() );
+
 			// どのタイミングでどのイベントが動作しているかを確認できるように、ロギングしている(デバッグ実行で出力画面で確認可能)
 			lifeTime?.ApplicationStarted.Register( () =>
 			{
 				logger?.LogInformation( "Called lifeTime?.ApplicationStarted" );
-				GetService<IMainWindow>()?.Show();
 			} );
 			lifeTime?.ApplicationStopping.Register( () =>
 			{
 				logger?.LogInformation( "Called lifeTime?.ApplicationStopping" );
+
+				// WPFアプリの場合は、メインウィンドウのクローズするとRunループから抜けて終了処理が開始される
 				App.Current.MainWindow?.Close();
 			} );
 			lifeTime?.ApplicationStopped.Register( () =>
 			{
 				logger?.LogInformation( "Called lifeTime?.ApplicationStopped" );
 			} );
-			logger?.LogInformation( "PreCall m_host.StartAsync()" );
 		}
 
 		private void ConfigureServices( HostBuilderContext context, IServiceCollection services )

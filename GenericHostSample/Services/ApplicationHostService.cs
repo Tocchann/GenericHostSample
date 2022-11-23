@@ -13,12 +13,14 @@ public class ApplicationHostService : IHostedService
 	public ApplicationHostService( IServiceProvider serviceProvider, ILogger<ApplicationHostService> logger )
 	{
 		m_logger = logger;
+		m_serviceProvider = serviceProvider;
 	}
 	public async Task StartAsync( CancellationToken cancellationToken )
 	{
 		m_logger.LogInformation( "Called StartAsync()" );
 		cancellationToken.ThrowIfCancellationRequested();
 		await Task.CompletedTask;
+		m_serviceProvider.GetService<IMainWindow>()?.Show();
 	}
 
 	public async Task StopAsync( CancellationToken cancellationToken )
@@ -28,4 +30,5 @@ public class ApplicationHostService : IHostedService
 		await Task.CompletedTask;
 	}
 	private ILogger<ApplicationHostService> m_logger;
+	private IServiceProvider m_serviceProvider;
 }
