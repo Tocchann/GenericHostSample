@@ -20,6 +20,8 @@ public class ApplicationHostService : IHostedService
 		m_logger.LogInformation( "Called StartAsync()" );
 		cancellationToken.ThrowIfCancellationRequested();
 		await Task.CompletedTask;
+		// IHostApplicationLifetime.ApplicationStarted イベントハンドラとして用意しても同じ
+		// GetService<IIHostApplicationLifetime>()?.ApplicationStarted.Register( () => GetService<IMainWindow>()?.Show() );
 		m_serviceProvider.GetService<IMainWindow>()?.Show();
 	}
 

@@ -21,9 +21,9 @@ namespace GenericHostSample
 	public partial class App : Application
 	{
 		public T? GetService<T>() where T : class => m_host?.Services.GetService( typeof( T ) ) as T;
-		public static new App Current => (App)Application.Current;
 		private async void OnStartup( object sender, StartupEventArgs e )
 		{
+			// WinForms で使う場合は、Main() の Run の手前で記述
 			var appLocation = Path.GetDirectoryName( Assembly.GetEntryAssembly()?.Location ) ?? string.Empty;
 			m_host = Host.CreateDefaultBuilder( e.Args )
 					.ConfigureAppConfiguration( c => c.SetBasePath( appLocation ) )
@@ -64,13 +64,13 @@ namespace GenericHostSample
 
 		private void ConfigureServices( HostBuilderContext context, IServiceCollection services )
 		{
-			// IHost の動作状況に合わせてコールバックされるサービス(IHostApplicationLifetimeのイベントで処理しているのでこっちはいらない)
+			// IHost の動作状況に合わせてコールバックされるサービス
 			services.AddHostedService<ApplicationHostService>();
 
 			// 独自に作ったサービス
 			services.AddSingleton<IMessageBoxService, MessageBoxService>();
-			services.AddTransient<ISelectFileService, SelectFileService>();
 
+			services.AddTransient<ISelectFileService, SelectFileService>();
 			// Model
 			services.AddTransient<Model>();
 
@@ -80,6 +80,7 @@ namespace GenericHostSample
 		}
 		private async void OnExit( object sender, ExitEventArgs e )
 		{
+			// WinForms で使う場合は、Application.ApplicationExit イベントに実装
 			var logger = GetService<ILogger<App>>();
 			logger?.LogInformation( "PreCall m_host.StopAsync()" );
 			if( m_host is not null )
