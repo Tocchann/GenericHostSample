@@ -68,5 +68,15 @@ namespace GenericHostSample.Properties {
                 return ResourceManager.GetString("AppTitle", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   アプリケーションを終了します。
+        ///よろしいですか？ に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string ExitQuestionMessage {
+            get {
+                return ResourceManager.GetString("ExitQuestionMessage", resourceCulture);
+            }
+        }
     }
 }

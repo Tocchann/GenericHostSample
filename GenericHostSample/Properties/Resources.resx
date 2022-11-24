@@ -120,4 +120,8 @@
   <data name="AppTitle" xml:space="preserve">
     <value>さんぷるがぞうびゅわー</value>
   </data>
+  <data name="ExitQuestionMessage" xml:space="preserve">
+    <value>アプリケーションを終了します。
+よろしいですか？</value>
+  </data>
 </root>

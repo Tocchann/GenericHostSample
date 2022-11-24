@@ -14,12 +14,13 @@ using System.Windows.Media.Imaging;
 namespace GenericHostSample.ViewModels;
 public class MainWindowViewModel : ObservableObject
 {
-	public MainWindowViewModel( Model model, ILogger<MainWindowViewModel> logger, ISelectFileService fileService, IHostApplicationLifetime lifeTime )
+	public MainWindowViewModel( Model model, ILogger<MainWindowViewModel> logger, ISelectFileService fileService, IHostApplicationLifetime lifeTime, IMessageBoxService messageBoxService )
 	{
 		Model = model;
 		m_logger = logger;
 		m_selectFileService = fileService;
 		m_lifeTime = lifeTime;
+		m_messageBoxService = messageBoxService;
 		m_selectFileFilter = string.Empty;
 	}
 	public Model Model { get; set; }
@@ -56,6 +57,12 @@ public class MainWindowViewModel : ObservableObject
 	private void OnFileExit()
 	{
 		m_logger.LogInformation( $"Called {System.Reflection.MethodBase.GetCurrentMethod()?.Name}()" );
+		if( m_messageBoxService.Show( Resources.ExitQuestionMessage, 
+			System.Windows.MessageBoxButton.YesNo, 
+			System.Windows.MessageBoxImage.Question ) != System.Windows.MessageBoxResult.Yes )
+		{
+			return;
+		}
 		m_lifeTime.StopApplication();
 	}
 
@@ -83,5 +90,6 @@ public class MainWindowViewModel : ObservableObject
 	private readonly ILogger<MainWindowViewModel> m_logger;
 	private readonly ISelectFileService m_selectFileService;
 	private readonly IHostApplicationLifetime m_lifeTime;
+	private readonly IMessageBoxService m_messageBoxService;
 	private string m_selectFileFilter;
 }
