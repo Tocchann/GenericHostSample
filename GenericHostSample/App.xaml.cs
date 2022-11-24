@@ -31,27 +31,29 @@ namespace GenericHostSample
 					.Build();
 
 			var logger = GetService<ILogger<App>>();
+			// ロギングなどが不要ならメソッドアウトせずに以下の１行で済む
+			//GetService<IHostApplicationLifetime>()?.ApplicationStopping.Register( () => App.Current.MainWindow?.Close() );
 			SetupLifeTimeEvents( logger, GetService<IHostApplicationLifetime>() );
-
 			logger?.LogInformation( "PreCall m_host.StartAsync()" );
+
 			await m_host.StartAsync();
 		}
 
 		private void SetupLifeTimeEvents( ILogger<App>? logger, IHostApplicationLifetime? lifeTime )
 		{
-			// ロギングなどが不要ならメソッドアウトせずに以下の１行で済む
-			//GetService<IHostApplicationLifetime>()?.ApplicationStopping.Register( () => App.Current.MainWindow?.Close() );
 
 			// どのタイミングでどのイベントが動作しているかを確認できるように、ロギングしている(デバッグ実行で出力画面で確認可能)
 			lifeTime?.ApplicationStarted.Register( () =>
 			{
 				logger?.LogInformation( "Called lifeTime?.ApplicationStarted" );
 			} );
+
+			// フレームワークに終了処理を開始させるためのイベント(StopApplicationを呼び出すことでコールされる)
 			lifeTime?.ApplicationStopping.Register( () =>
 			{
 				logger?.LogInformation( "Called lifeTime?.ApplicationStopping" );
 
-				// WPFアプリの場合は、メインウィンドウのクローズするとRunループから抜けて終了処理が開始される
+				// メインウィンドウのクローズすることで、フレームワークが終了処理を開始する
 				App.Current.MainWindow?.Close();
 			} );
 			lifeTime?.ApplicationStopped.Register( () =>
