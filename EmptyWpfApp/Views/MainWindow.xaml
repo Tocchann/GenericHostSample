@@ -1,0 +1,21 @@
+﻿<Window x:Class="EmptyWpfApp.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:EmptyWpfApp"
+        xmlns:vm="clr-namespace:EmptyWpfApp.ViewModels"
+        mc:Ignorable="d"
+        Title="{Binding Title}" Height="450" Width="800" WindowStartupLocation="CenterScreen"
+        Closing="OnClosing" Closed="OnClosed" Loaded="OnLoaded">
+    <d:Window.DataContext>
+        <vm:MainWindowViewModel />
+    </d:Window.DataContext>
+    <Grid>
+        <Menu IsMainMenu="True">
+            <MenuItem Header="ファイル(_F)">
+                <MenuItem Header="終了(_X)" Command="{Binding FileExitCommand}" />
+            </MenuItem>
+        </Menu>
+    </Grid>
+</Window>
