@@ -19,18 +19,18 @@ namespace EmptyWpfApp.Services
 		}
 		public async Task StartAsync( CancellationToken cancellationToken )
 		{
-			m_logger?.LogInformation( $"In  {System.Reflection.MethodBase.GetCurrentMethod()?.Name}()" );
+			m_logger?.LogInformation( $"In  StartAsync()" );
 			cancellationToken.ThrowIfCancellationRequested();
 			await Task.CompletedTask;
-			m_logger?.LogInformation( $"Out {System.Reflection.MethodBase.GetCurrentMethod()?.Name}()" );
+			m_logger?.LogInformation( $"Out StartAsync()" );
 		}
 
 		public async Task StopAsync( CancellationToken cancellationToken )
 		{
-			m_logger?.LogInformation( $"In {System.Reflection.MethodBase.GetCurrentMethod()?.Name}()" );
+			m_logger?.LogInformation( $"In StopAsync()" );
 			cancellationToken.ThrowIfCancellationRequested();
 			await Task.CompletedTask;
-			m_logger?.LogInformation( $"Out {System.Reflection.MethodBase.GetCurrentMethod()?.Name}()" );
+			m_logger?.LogInformation( $"Out StopAsync()" );
 		}
 	}
 }

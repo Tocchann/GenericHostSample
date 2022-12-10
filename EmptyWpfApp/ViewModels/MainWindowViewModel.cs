@@ -41,12 +41,12 @@ namespace EmptyWpfApp.ViewModels
 		}
 		private void OnFileExit()
 		{
-			m_logger?.LogInformation( "In  IHostApplicationLifetime.ApplicationStopping" );
+			m_logger?.LogInformation( $"In  {System.Reflection.MethodBase.GetCurrentMethod()?.Name}" );
 			if( m_msgBox?.Show( Resources.QueryAppExit, IMessageBoxService.MessageBoxButton.YesNo, IMessageBoxService.MessageBoxImage.Question) == IMessageBoxService.MessageBoxResult.Yes )
 			{
 				m_lifeTime?.StopApplication();
 			}
-			m_logger?.LogInformation( "Out IHostApplicationLifetime.ApplicationStopping" );
+			m_logger?.LogInformation( $"Out {System.Reflection.MethodBase.GetCurrentMethod()?.Name}" );
 		}
 	}
 }

@@ -53,7 +53,7 @@ namespace EmptyWpfApp.Views
 				// 非同期(ウィンドウメッセージの非同期処理)に終了コマンドを実行する(直接呼び出すと再帰してしまいクラッシュする)
 				Dispatcher.BeginInvoke( () => m_viewModel.FileExitCommand.Execute( null ) );
 			}
-			m_logger?.LogInformation( $"Out {System.Reflection.MethodBase.GetCurrentMethod()?.Name}()" );
+			m_logger?.LogInformation( $"Out {System.Reflection.MethodBase.GetCurrentMethod()?.Name}( e.Cancel={e.Cancel})" );
 		}
 		private void OnClosed( object sender, EventArgs e )
 		{

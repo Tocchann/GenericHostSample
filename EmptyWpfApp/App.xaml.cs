@@ -34,7 +34,7 @@ namespace EmptyWpfApp
 		private IMessageBoxService? m_msgBox;
 		private async void OnStartupAsync( object sender, StartupEventArgs e )
 		{
-			Trace.WriteLine( $"In  {System.Reflection.MethodBase.GetCurrentMethod()?.Name}()" );
+			Trace.WriteLine( $"In  App.OnStartupAsync()" );
 			// アプリケーションのベースパスはexeのある場所
 			var appLocation = Path.GetDirectoryName( Assembly.GetEntryAssembly()?.Location ) ?? string.Empty;
 			// 本当はアプリケーションの起動パラメータをそのまま渡すのもセキュリティ的に危ないのでやらないほうがいい
@@ -62,7 +62,7 @@ namespace EmptyWpfApp
 			} );
 			m_logger?.LogInformation( $"Call m_host.StartAsync();" );
 			await m_host.StartAsync();
-			m_logger?.LogInformation( $"Out {System.Reflection.MethodBase.GetCurrentMethod()?.Name}()" );
+			m_logger?.LogInformation( $"Out OnStartupAsync()" );
 		}
 
 		private void ConfigureServices( HostBuilderContext context, IServiceCollection services )
@@ -81,12 +81,12 @@ namespace EmptyWpfApp
 		}
 		private async void OnExitAsync( object sender, ExitEventArgs e )
 		{
-			m_logger?.LogInformation( $"In  {System.Reflection.MethodBase.GetCurrentMethod()?.Name}()" );
+			m_logger?.LogInformation( $"In  OnExitAsync()" );
 			if( m_host is not null )
 			{
 				await m_host.StopAsync();
 			}
-			m_logger?.LogInformation( $"Out {System.Reflection.MethodBase.GetCurrentMethod()?.Name}()" );
+			m_logger?.LogInformation( $"Out OnExitAsync()" );
 		}
 		private void OnDispatcherUnhandledException( object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e )
 		{
