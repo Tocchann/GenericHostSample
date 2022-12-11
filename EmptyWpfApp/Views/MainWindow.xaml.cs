@@ -25,8 +25,8 @@ namespace EmptyWpfApp.Views
 	/// </summary>
 	public partial class MainWindow : IMainWindow
 	{
-		private IMainWindowViewModel m_viewModel;
-		private ILogger<MainWindow> m_logger;
+		private readonly IMainWindowViewModel m_viewModel;
+		private readonly ILogger<MainWindow> m_logger;
 
 		private bool IsRunning { get; set; }
 

@@ -11,7 +11,7 @@ namespace EmptyWpfApp.Services
 {
 	public class ApplicationHostService : IHostedService
 	{
-		private ILogger<ApplicationHostService> m_logger;
+		private readonly ILogger<ApplicationHostService> m_logger;
 
 		public ApplicationHostService( ILogger<ApplicationHostService> logger )
 		{
