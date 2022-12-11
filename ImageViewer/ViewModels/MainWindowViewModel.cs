@@ -5,6 +5,7 @@ using ImageViewer.Properties;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,11 +22,7 @@ namespace ImageViewer.ViewModels
 		public ICommand FileOpenCommand => m_fileOpenCommand ?? (m_fileOpenCommand = new RelayCommand( OnFileOpen ));
 		public ICommand FileExitCommand => m_fileExitCommand ?? (m_fileExitCommand = new RelayCommand( OnFileExit ));
 
-		public string Title
-		{
-			get => m_title;
-			set => SetProperty( ref m_title, value );
-		}
+		public string Title => string.IsNullOrEmpty( Model?.FilePath ) ? Resources.AppTitle : Resources.AppTitle + " - " + Path.GetFileName( Model.FilePath );
 		public BitmapSource? Image
 		{
 			get => Model.Image;
@@ -40,11 +37,9 @@ namespace ImageViewer.ViewModels
 		public MainWindowViewModel()
 		{
 			Model = new();
-			Title = Resources.AppTitle;
 		}
 		private ICommand? m_fileOpenCommand;
 		private ICommand? m_fileExitCommand;
-		private string m_title = string.Empty;
 		private string? m_selectFileFilter;
 		private string? m_firstFilterExt;
 
