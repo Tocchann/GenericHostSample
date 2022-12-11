@@ -51,7 +51,6 @@ public class MainWindowViewModel : ObservableObject
 			Model.OpenFile( filePath );
 			OnPropertyChanged( nameof( Image ) );
 			OnPropertyChanged( nameof( Title ) );
-			OnPropertyChanged( nameof( Title ) );
 		}
 	}
 	private void OnFileExit()
