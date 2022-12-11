@@ -71,11 +71,13 @@ namespace ImageViewer.ViewModels
 
 		private void OnFileExit()
 		{
-			if( MessageBox.Show( Resources.QueryAppExit, Resources.AppTitle, MessageBoxButton.YesNo, MessageBoxImage.Question ) == MessageBoxResult.Yes )
+			if( MessageBox.Show( Resources.QueryAppExit, Resources.AppTitle,
+				MessageBoxButton.YesNo, MessageBoxImage.Question ) != MessageBoxResult.Yes )
 			{
-				IsRunning = false;
-				App.Current.MainWindow.Close();
+				return;
 			}
+			IsRunning = false;
+			App.Current.MainWindow.Close();
 		}
 		private string GetImageFileFilter()
 		{
