@@ -24,21 +24,6 @@ namespace ImageViewer.Views
 		public MainWindow()
 		{
 			InitializeComponent();
-			m_viewModel = (MainWindowViewModel)DataContext;
-		}
-		public MainWindowViewModel m_viewModel;
-
-		private void Window_Loaded( object sender, RoutedEventArgs e )
-		{
-			m_viewModel.IsRunning = true;
-		}
-		private void Window_Closing( object sender, System.ComponentModel.CancelEventArgs e )
-		{
-			if( m_viewModel.IsRunning )
-			{
-				e.Cancel = true;
-				Dispatcher.BeginInvoke( () => m_viewModel.FileExitCommand.Execute( null ) );
-			}
 		}
 	}
 }

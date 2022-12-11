@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:ImageViewer"
         xmlns:vm="clr-namespace:ImageViewer.ViewModels"
         mc:Ignorable="d"
-        Title="{Binding Title}" Height="450" Width="800" WindowStartupLocation="CenterScreen" Closing="Window_Closing" Loaded="Window_Loaded">
+        Title="{Binding Title}" Height="450" Width="800" WindowStartupLocation="CenterScreen">
     <Window.DataContext>
         <vm:MainWindowViewModel />
     </Window.DataContext>
