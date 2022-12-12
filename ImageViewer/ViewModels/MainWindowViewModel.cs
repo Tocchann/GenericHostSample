@@ -3,102 +3,98 @@ using CommunityToolkit.Mvvm.Input;
 using ImageViewer.Models;
 using ImageViewer.Properties;
 using Microsoft.Win32;
-using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 
-namespace ImageViewer.ViewModels
+namespace ImageViewer.ViewModels;
+
+public partial class MainWindowViewModel : ObservableObject
 {
-	public class MainWindowViewModel : ObservableObject
+	public Model Model { get; set; }
+	public ICommand FileOpenCommand => m_fileOpenCommand ?? (m_fileOpenCommand = new RelayCommand( OnFileOpen ));
+	public ICommand FileExitCommand => m_fileExitCommand ?? (m_fileExitCommand = new RelayCommand( OnFileExit ));
+	[ObservableProperty]
+	private bool m_isRunning;
+
+	public string Title => string.IsNullOrEmpty( Model?.FilePath ) ? Resources.AppTitle : Resources.AppTitle + " - " + Path.GetFileName( Model.FilePath );
+	public BitmapSource? Image
 	{
-		public Model Model { get; set; }
-		public bool IsRunning { get; set; }
-		public ICommand FileOpenCommand => m_fileOpenCommand ?? (m_fileOpenCommand = new RelayCommand( OnFileOpen ));
-		public ICommand FileExitCommand => m_fileExitCommand ?? (m_fileExitCommand = new RelayCommand( OnFileExit ));
+		get => Model.Image;
+		set
+		{
+			OnPropertyChanging();
+			Model.Image = new WriteableBitmap( value );
+			OnPropertyChanged();
+		}
+	}
 
-		public string Title => string.IsNullOrEmpty( Model?.FilePath ) ? Resources.AppTitle : Resources.AppTitle + " - " + Path.GetFileName( Model.FilePath );
-		public BitmapSource? Image
-		{
-			get => Model.Image;
-			set
-			{
-				OnPropertyChanging();
-				Model.Image = new WriteableBitmap( value );
-				OnPropertyChanged();
-			}
-		}
+	public MainWindowViewModel()
+	{
+		Model = new();
+	}
+	private ICommand? m_fileOpenCommand;
+	private ICommand? m_fileExitCommand;
+	private string? m_selectFileFilter;
+	private string? m_firstFilterExt;
 
-		public MainWindowViewModel()
+	private void OnFileOpen()
+	{
+		var filePath = SelectFile();
+		if( !string.IsNullOrEmpty( filePath) )
 		{
-			Model = new();
+			Model.OpenFile( filePath );
+			OnPropertyChanged( nameof( Image ) );
+			OnPropertyChanged( nameof( Title ) );
 		}
-		private ICommand? m_fileOpenCommand;
-		private ICommand? m_fileExitCommand;
-		private string? m_selectFileFilter;
-		private string? m_firstFilterExt;
+	}
 
-		private void OnFileOpen()
+	private string SelectFile()
+	{
+		var dlg = new OpenFileDialog
 		{
-			var filePath = SelectFile();
-			if( !string.IsNullOrEmpty( filePath) )
-			{
-				Model.OpenFile( filePath );
-				OnPropertyChanged( nameof( Image ) );
-				OnPropertyChanged( nameof( Title ) );
-			}
+			Filter = GetImageFileFilter(),
+			DefaultExt = GetFirstFilterExt(),
+			FileName = Model.FilePath,
+		};
+		if( dlg.ShowDialog() != false )
+		{
+			return dlg.FileName ?? string.Empty;
 		}
+		return string.Empty;
+	}
 
-		private string SelectFile()
+	public void OnFileExit()
+	{
+		if( MessageBox.Show( Resources.QueryAppExit, Resources.AppTitle,
+			MessageBoxButton.YesNo, MessageBoxImage.Question ) != MessageBoxResult.Yes )
 		{
-			var dlg = new OpenFileDialog
-			{
-				Filter = GetImageFileFilter(),
-				DefaultExt = GetFirstFilterExt(),
-				FileName = Model.FilePath,
-			};
-			if( dlg.ShowDialog() != false )
-			{
-				return dlg.FileName ?? string.Empty;
-			}
-			return string.Empty;
+			return;
 		}
-
-		private void OnFileExit()
+		IsRunning = false;
+		App.Current.MainWindow.Close();
+	}
+	private string GetImageFileFilter()
+	{
+		if( string.IsNullOrWhiteSpace( m_selectFileFilter ) )
 		{
-			if( MessageBox.Show( Resources.QueryAppExit, Resources.AppTitle,
-				MessageBoxButton.YesNo, MessageBoxImage.Question ) != MessageBoxResult.Yes )
-			{
-				return;
-			}
-			IsRunning = false;
-			App.Current.MainWindow.Close();
+			m_selectFileFilter = string.Join( "|",
+				Model.ImageFileFilters.Select( filter =>
+					string.Join( "|", filter.Key, string.Join( ';', filter.Value.Split( ',' ).Select( ext => "*" + ext ) ) )
+				)
+			);
+			m_selectFileFilter += "|すべてのファイル|*.*";
 		}
-		private string GetImageFileFilter()
+		return m_selectFileFilter;
+	}
+	private string GetFirstFilterExt()
+	{
+		if( string.IsNullOrWhiteSpace( m_firstFilterExt ) )
 		{
-			if( string.IsNullOrWhiteSpace( m_selectFileFilter ) )
-			{
-				m_selectFileFilter = string.Join( "|",
-					Model.ImageFileFilters.Select( filter =>
-						string.Join( "|", filter.Key, string.Join( ';', filter.Value.Split( ',' ).Select( ext => "*" + ext ) ) )
-					)
-				);
-				m_selectFileFilter += "|すべてのファイル|*.*";
-			}
-			return m_selectFileFilter;
+			m_firstFilterExt = "*" + Model.ImageFileFilters.First().Value.Split( ',' ).First();
 		}
-		private string GetFirstFilterExt()
-		{
-			if( string.IsNullOrWhiteSpace( m_firstFilterExt ) )
-			{
-				m_firstFilterExt = "*" + Model.ImageFileFilters.First().Value.Split( ',' ).First();
-			}
-			return m_firstFilterExt;
-		}
+		return m_firstFilterExt;
 	}
 }
