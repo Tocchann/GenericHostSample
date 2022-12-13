@@ -42,9 +42,30 @@ namespace EmptyWpfApp
 				.ConfigureAppConfiguration( c => c.SetBasePath( appLocation ) )
 				.ConfigureServices( ConfigureServices )
 				.Build();
-			m_logger = GetService<ILogger<App>>();
-			// 動作がわかりやすいように、呼ばれたところでログ出力しておく
-			var lifeTime = GetService<IHostApplicationLifetime>();
+
+			ConfigureApplicationLifeTime( GetService<ILogger<App>>(), GetService<IHostApplicationLifetime>() );
+
+			m_logger?.LogInformation( $"Call m_host.StartAsync();" );
+			await m_host.StartAsync();
+			m_logger?.LogInformation( $"Out OnStartupAsync()" );
+		}
+		private void ConfigureServices( HostBuilderContext context, IServiceCollection services )
+		{
+			// IHostedService の登録
+			services.AddHostedService<ApplicationHostService>();
+
+			// アプリケーションプロセス全体でインスタンスが一つあればよいサービス
+			services.AddSingleton<IMessageBoxService, MessageBoxService>();
+
+			// 呼び出しごとにインスタンスが生成されるサービス
+
+			// MainWindow
+			services.AddTransient<IMainWindowViewModel, MainWindowViewModel>();
+			services.AddTransient<IMainWindow, MainWindow>();
+		}
+		private void ConfigureApplicationLifeTime( ILogger<App>? logger, IHostApplicationLifetime? lifeTime )
+		{
+			m_logger = logger;
 			lifeTime?.ApplicationStarted.Register( () =>
 			{
 				m_logger?.LogInformation( "In  IHostApplicationLifetime.ApplicationStarted" );
@@ -60,24 +81,6 @@ namespace EmptyWpfApp
 				Current.MainWindow?.Close();
 				m_logger?.LogInformation( "Out IHostApplicationLifetime.ApplicationStopping" );
 			} );
-			m_logger?.LogInformation( $"Call m_host.StartAsync();" );
-			await m_host.StartAsync();
-			m_logger?.LogInformation( $"Out OnStartupAsync()" );
-		}
-
-		private void ConfigureServices( HostBuilderContext context, IServiceCollection services )
-		{
-			// IHostedService の登録
-			services.AddHostedService<ApplicationHostService>();
-
-			// アプリケーションプロセス全体でインスタンスが一つあればよいサービス
-			services.AddSingleton<IMessageBoxService, MessageBoxService>();
-
-			// 呼び出しごとにインスタンスが生成されるサービス
-
-			// MainWindow
-			services.AddTransient<IMainWindowViewModel, MainWindowViewModel>();
-			services.AddTransient<IMainWindow, MainWindow>();
 		}
 		private async void OnExitAsync( object sender, ExitEventArgs e )
 		{
