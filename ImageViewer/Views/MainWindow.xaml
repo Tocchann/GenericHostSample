@@ -6,10 +6,11 @@
         xmlns:local="clr-namespace:ImageViewer"
         xmlns:vm="clr-namespace:ImageViewer.ViewModels"
         mc:Ignorable="d"
+        Loaded="Window_Loaded" Closing="Window_Closing"
         Title="{Binding Title}" Height="450" Width="800" WindowStartupLocation="CenterScreen">
-    <Window.DataContext>
+    <d:Window.DataContext>
         <vm:MainWindowViewModel />
-    </Window.DataContext>
+    </d:Window.DataContext>
     <Window.InputBindings>
         <KeyBinding Key="O" Modifiers="Ctrl" Command="{Binding FileOpenCommand}" />
         <KeyBinding Key="F4" Modifiers="Alt" Command="{Binding FileExitCommand}" />
