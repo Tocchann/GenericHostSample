@@ -1,4 +1,6 @@
-﻿using ImageViewer.ViewModels;
+﻿using ImageViewer.Contracts.ViewModels;
+using ImageViewer.Contracts.Views;
+using ImageViewer.ViewModels;
 using System.Windows;
 
 namespace ImageViewer.Views;
@@ -6,11 +8,12 @@ namespace ImageViewer.Views;
 /// <summary>
 /// Interaction logic for MainWindow.xaml
 /// </summary>
-public partial class MainWindow
+public partial class MainWindow : IMainWindow
 {
-	public MainWindow()
+	public MainWindow( IMainWindowViewModel vm )
 	{
 		InitializeComponent();
+		DataContext = vm;
 	}
 	private void Window_Loaded( object sender, RoutedEventArgs e )
 	{

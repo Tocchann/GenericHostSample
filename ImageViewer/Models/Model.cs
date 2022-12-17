@@ -11,7 +11,7 @@ public class Model
 	{
 		m_filters = new();
 	}
-	public string? FilePath { get; set; }
+	public string FilePath { get; set; } = string.Empty;
 	public WriteableBitmap? Image { get; set; }
 	public IEnumerable<KeyValuePair<string, string>> ImageFileFilters
 	{
