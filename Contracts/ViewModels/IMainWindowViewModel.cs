@@ -5,11 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace EmptyWpfApp.Contracts.ViewModels
+namespace ImageViewer.Contracts.ViewModels
 {
 	public interface IMainWindowViewModel
 	{
 		public bool IsRunning { get; set; }
-		public void OnFileExit();
+		public void ExitApplication();
 	}
 }

@@ -1,4 +1,4 @@
-﻿namespace GenericHostSample.Contracts.Services;
+﻿namespace ImageViewer.Contracts.Services;
 public interface IMessageBoxService
 {
 	System.Windows.MessageBoxResult Show(

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EmptyWpfApp.Contracts.Views
+namespace ImageViewer.Contracts.Views
 {
     public interface IMainWindow
     {
