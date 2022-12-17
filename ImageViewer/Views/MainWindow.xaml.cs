@@ -26,7 +26,7 @@ public partial class MainWindow
 			if( vm.IsRunning )
 			{
 				e.Cancel = true;
-				Dispatcher.BeginInvoke( () => vm.OnFileExit() );
+				Dispatcher.BeginInvoke( () => vm.ExitApplication() );
 			}
 		}
 	}
