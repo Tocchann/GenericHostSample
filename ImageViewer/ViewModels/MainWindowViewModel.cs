@@ -30,6 +30,10 @@ public partial class MainWindowViewModel : ObservableObject
 			OnPropertyChanged();
 		}
 	}
+	public void ExitApplication()
+	{
+		OnFileExit();
+	}
 
 	public MainWindowViewModel()
 	{
@@ -66,7 +70,7 @@ public partial class MainWindowViewModel : ObservableObject
 		return string.Empty;
 	}
 
-	public void OnFileExit()
+	private void OnFileExit()
 	{
 		if( MessageBox.Show( Resources.QueryAppExit, Resources.AppTitle,
 			MessageBoxButton.YesNo, MessageBoxImage.Question ) != MessageBoxResult.Yes )

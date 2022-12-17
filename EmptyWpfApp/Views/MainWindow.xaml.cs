@@ -37,7 +37,7 @@ public partial class MainWindow : IMainWindow
 			{
 				e.Cancel = true;
 				// 非同期(ウィンドウメッセージの非同期処理)に終了コマンドを実行する(直接呼び出すと再帰してしまいクラッシュする)
-				Dispatcher.BeginInvoke( () => vm.OnFileExit() );
+				Dispatcher.BeginInvoke( () => vm.ExitApplication() );
 			}
 		}
 		m_logger?.LogInformation( $"Out {System.Reflection.MethodBase.GetCurrentMethod()?.Name}( e.Cancel={e.Cancel})" );
