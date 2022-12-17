@@ -21,6 +21,10 @@ public partial class MainWindowViewModel : ObservableObject, IMainWindowViewMode
 	private readonly IMessageBoxService m_msgBox;
 	private readonly IHostApplicationLifetime m_lifeTime;
 	private ICommand? m_fileExitCommand;
+	public void ExitApplication()
+	{
+		OnFileExit();
+	}
 	public MainWindowViewModel( ILogger<MainWindowViewModel> logger, IMessageBoxService msgBox, IHostApplicationLifetime lifeTime )
 	{
 		m_logger = logger;
@@ -34,7 +38,7 @@ public partial class MainWindowViewModel : ObservableObject, IMainWindowViewMode
 #pragma warning restore CS8618 // null 非許容のフィールドには、コンストラクターの終了時に null 以外の値が入っていなければなりません。Null 許容として宣言することをご検討ください。
 	{
 	}
-	public void OnFileExit()
+	private void OnFileExit()
 	{
 		m_logger?.LogInformation( $"In  {System.Reflection.MethodBase.GetCurrentMethod()?.Name}" );
 		if( m_msgBox?.Show( Resources.QueryAppExit, IMessageBoxService.MessageBoxButton.YesNo, IMessageBoxService.MessageBoxImage.Question) == IMessageBoxService.MessageBoxResult.Yes )

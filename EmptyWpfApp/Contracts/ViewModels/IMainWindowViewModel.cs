@@ -2,5 +2,5 @@
 public interface IMainWindowViewModel
 {
 	public bool IsRunning { get; set; }
-	public void OnFileExit();
+	public void ExitApplication();
 }

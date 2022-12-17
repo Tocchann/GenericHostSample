@@ -77,7 +77,7 @@ namespace EmptyWpfApp
 			lifeTime?.ApplicationStopping.Register( () =>
 			{
 				m_logger?.LogInformation( "In  IHostApplicationLifetime.ApplicationStopping" );
-				// アプリケーションの終了要求はメインウィンドウのクローズを実施すればよい
+				// アプリケーションの終了要求はメインウィンドウのクローズを実施すればよい0
 				Current.MainWindow?.Close();
 				m_logger?.LogInformation( "Out IHostApplicationLifetime.ApplicationStopping" );
 			} );
